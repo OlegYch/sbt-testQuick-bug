@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        java: [21]
+        jdk-distribution: [adopt]
+    name: Test on java ${{ matrix.java }}-${{ matrix.jdk-distribution }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }} on ${{ matrix.jdk-distribution }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.jdk-distribution }}
+
+      - name: Set up SBT
+        uses: sbt/setup-sbt@v1
+
+      - name: Cache SBT
+        uses: actions/cache@v4
+        with:
+          path: ~/.sbt
+          key: ${{ runner.os }}-sbt-java-${{ matrix.java }}-${{ matrix.jdk-distribution }}-${{ github.run_number }}
+          restore-keys: ${{ runner.os }}-sbt-java-${{ matrix.java }}-${{ matrix.jdk-distribution }}-
+
+      - name: Cache coursier cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/coursier
+          key: ${{ runner.os }}-coursier-${{ github.run_number }}
+          restore-keys: ${{ runner.os }}-coursier-
+
+      - name: Checkout current
+        run: git checkout . && git clean -df
+      - name: Run tests
+        run: sbt 'eval java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments();scripted'
+      - name: Clean caches
+        run: |
+          rm -fv ~/.ivy2/.sbt.ivy.lock
+          find ~/.sbt        -name "*.lock"               -print -delete
+          rm -rf ./.git
+          rm -rf ./project/target #clean doesn't clean meta-build
