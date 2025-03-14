@@ -1,0 +1,1 @@
+testQuick is not re-running tests after code change - see [test](src/sbt-test/sample/testQuick/test)
