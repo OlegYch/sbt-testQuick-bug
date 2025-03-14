@@ -1,3 +1,3 @@
 > testQuick
 $ copy-file src/main/scala/main/part2.scala.txt src/main/scala/main/part2.scala
-#-> testQuick
+-> testQuick
