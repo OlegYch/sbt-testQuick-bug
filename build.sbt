@@ -1,5 +1,5 @@
 name := "sbt-testQuick-bug"
-Global / onChangedBuildSource := ReloadOnSourceChanges
+//Global / onChangedBuildSource := ReloadOnSourceChanges
 sbtPlugin := true
 scriptedBufferLog := false
 enablePlugins(ScriptedPlugin)
