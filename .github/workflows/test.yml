@@ -27,8 +27,6 @@ jobs:
 
       - name: Set up SBT
         uses: sbt/setup-sbt@v1
-        with:
-          sbt-runner-version: ${{ matrix.sbt-version }}
 
       - name: Cache SBT
         uses: actions/cache@v4
@@ -47,10 +45,11 @@ jobs:
       - name: Checkout current
         run: git checkout . && git clean -df
       - name: Run tests
-        run: sbt scripted
+        run: sbt --sbt-version ${{ matrix.sbt-version }} scripted
       - name: Clean caches
         run: |
           rm -fv ~/.ivy2/.sbt.ivy.lock
           find ~/.sbt        -name "*.lock"               -print -delete
+          find ./        -name "build.properties"               -print -delete
           rm -rf ./.git
           rm -rf ./project/target #clean doesn't clean meta-build
