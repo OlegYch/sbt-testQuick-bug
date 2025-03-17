@@ -1,3 +1,5 @@
 > testQuick
+$ sleep 1000
 $ copy-file src/main/scala/main/part2.scala.txt src/main/scala/main/part2.scala
+$ sleep 1000
 -> testQuick
